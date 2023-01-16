@@ -10,17 +10,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,7 +25,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+        while (_) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -57,30 +46,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
-exports.useGtm = exports.GtmPlugin = exports.loadScript = exports.hasScript = exports.GtmSupport = exports.assertIsGtmId = exports.createGtm = void 0;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.useGtm = exports.GtmPlugin = exports.loadScript = exports.hasScript = exports.GtmSupport = exports.assertIsGtmId = void 0;
 var core_1 = require("@gtm-support/core");
-exports.GtmPlugin = core_1.GtmSupport;
-var vue_1 = require("vue");
+Object.defineProperty(exports, "GtmPlugin", { enumerable: true, get: function () { return core_1.GtmSupport; } });
 var gtmPlugin;
 /**
  * Installation procedure.
  *
- * @param app The Vue app instance.
+ * @param Vue The Vue instance.
  * @param options Configuration options.
  */
-function install(app, options) {
+function install(Vue, options) {
     if (options === void 0) { options = { id: '' }; }
     // Apply default configuration
     options = __assign({ trackOnNextTick: false }, options);
     // Add to vue prototype and also from globals
     gtmPlugin = new core_1.GtmSupport(options);
-    app.config.globalProperties.$gtm = gtmPlugin;
+    Vue.prototype.$gtm = Vue.gtm = gtmPlugin;
     // Check if plugin is running in a real browser or e.g. in SSG mode
     if (gtmPlugin.isInBrowserContext()) {
         // Handle vue-router if defined
         if (options.vueRouter) {
-            initVueRouterGuard(app, options.vueRouter, options.ignoredViews, options.trackOnNextTick, options.vueRouterAdditionalEventData);
+            initVueRouterGuard(Vue, options.vueRouter, options.ignoredViews, options.trackOnNextTick);
         }
         // Load GTM script when enabled
         if (gtmPlugin.options.enabled && gtmPlugin.options.loadScript) {
@@ -103,33 +91,29 @@ function install(app, options) {
             }
         }
     }
-    app.provide('gtm', options);
 }
 /**
  * Initialize the router guard.
  *
- * @param app The Vue app instance.
+ * @param Vue The Vue instance.
  * @param vueRouter The Vue router instance to attach the guard.
  * @param ignoredViews An array of route name that will be ignored.
  * @param trackOnNextTick Whether or not to call `trackView` in `Vue.nextTick`.
  * @param deriveAdditionalEventData Callback to derive additional event data.
  */
-function initVueRouterGuard(app, vueRouter, ignoredViews, trackOnNextTick, deriveAdditionalEventData) {
+function initVueRouterGuard(Vue, vueRouter, ignoredViews, trackOnNextTick, deriveAdditionalEventData) {
     var _this = this;
     if (ignoredViews === void 0) { ignoredViews = []; }
     if (deriveAdditionalEventData === void 0) { deriveAdditionalEventData = function () { return ({}); }; }
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    function isNavigationFailure(failure, navigationFailureType) {
-        if (!(failure instanceof Error)) {
-            return false;
-        }
-        return !!(failure.type & navigationFailureType);
+    if (!vueRouter) {
+        console.warn("[VueGtm]: You tried to register 'vueRouter' for vue-gtm, but 'vue-router' was not found.");
+        return;
     }
-    vueRouter.afterEach(function (to, from, failure) { return __awaiter(_this, void 0, void 0, function () {
+    vueRouter.afterEach(function (to, from) { return __awaiter(_this, void 0, void 0, function () {
         var name, additionalEventData, _a, baseUrl, fullUrl;
-        var _b, _c, _d, _e;
-        return __generator(this, function (_f) {
-            switch (_f.label) {
+        var _b, _c;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0:
                     // Ignore some routes
                     if (typeof to.name !== 'string' ||
@@ -140,30 +124,20 @@ function initVueRouterGuard(app, vueRouter, ignoredViews, trackOnNextTick, deriv
                     name = to.meta && typeof to.meta.gtm === 'string' && !!to.meta.gtm
                         ? to.meta.gtm
                         : to.name;
-                    if (isNavigationFailure(failure, 4 /* NAVIGATION_ABORTED */)) {
-                        if (gtmPlugin === null || gtmPlugin === void 0 ? void 0 : gtmPlugin.debugEnabled()) {
-                            console.log("[VueGtm]: '".concat(name, "' not tracked due to navigation aborted"));
-                        }
-                    }
-                    else if (isNavigationFailure(failure, 8 /* NAVIGATION_CANCELLED */)) {
-                        if (gtmPlugin === null || gtmPlugin === void 0 ? void 0 : gtmPlugin.debugEnabled()) {
-                            console.log("[VueGtm]: '".concat(name, "' not tracked due to navigation cancelled"));
-                        }
-                    }
                     _a = [{}];
                     return [4 /*yield*/, deriveAdditionalEventData(to, from)];
                 case 1:
-                    additionalEventData = __assign.apply(void 0, [__assign.apply(void 0, _a.concat([(_f.sent())])), (_b = to.meta) === null || _b === void 0 ? void 0 : _b.gtmAdditionalEventData]);
-                    baseUrl = (_e = (_d = (_c = vueRouter.options) === null || _c === void 0 ? void 0 : _c.history) === null || _d === void 0 ? void 0 : _d.base) !== null && _e !== void 0 ? _e : '';
+                    additionalEventData = __assign.apply(void 0, [__assign.apply(void 0, _a.concat([(_d.sent())])), (_b = to.meta) === null || _b === void 0 ? void 0 : _b.gtmAdditionalEventData]);
+                    baseUrl = (_c = vueRouter.options.base) !== null && _c !== void 0 ? _c : '';
                     fullUrl = baseUrl;
                     if (!fullUrl.endsWith('/')) {
                         fullUrl += '/';
                     }
                     fullUrl += to.fullPath.startsWith('/')
-                        ? to.fullPath.substring(1)
+                        ? to.fullPath.substr(1)
                         : to.fullPath;
                     if (trackOnNextTick) {
-                        void (0, vue_1.nextTick)(function () {
+                        Vue.nextTick(function () {
                             gtmPlugin === null || gtmPlugin === void 0 ? void 0 : gtmPlugin.trackView(name, fullUrl, additionalEventData);
                         });
                     }
@@ -175,23 +149,13 @@ function initVueRouterGuard(app, vueRouter, ignoredViews, trackOnNextTick, deriv
         });
     }); });
 }
-/**
- * Create the Vue GTM instance.
- *
- * @param options Options.
- * @returns The Vue GTM plugin instance.
- */
-function createGtm(options) {
-    return { install: function (app) { return install(app, options); } };
-}
-exports.createGtm = createGtm;
 var _default = { install: install };
 var core_2 = require("@gtm-support/core");
-__createBinding(exports, core_2, "assertIsGtmId");
-__createBinding(exports, core_2, "GtmSupport");
-__createBinding(exports, core_2, "hasScript");
-__createBinding(exports, core_2, "loadScript");
-exports["default"] = _default;
+Object.defineProperty(exports, "assertIsGtmId", { enumerable: true, get: function () { return core_2.assertIsGtmId; } });
+Object.defineProperty(exports, "GtmSupport", { enumerable: true, get: function () { return core_2.GtmSupport; } });
+Object.defineProperty(exports, "hasScript", { enumerable: true, get: function () { return core_2.hasScript; } });
+Object.defineProperty(exports, "loadScript", { enumerable: true, get: function () { return core_2.loadScript; } });
+exports.default = _default;
 /**
  * Returns GTM plugin instance to be used via Composition API inside setup method.
  *
