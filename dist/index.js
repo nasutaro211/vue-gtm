@@ -1,4 +1,3 @@
-// aaa
 "use strict";
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
@@ -11,6 +10,17 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -26,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -47,10 +57,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.useGtm = exports.GtmPlugin = exports.loadScript = exports.hasScript = exports.GtmSupport = exports.assertIsGtmId = void 0;
 var core_1 = require("@gtm-support/core");
-Object.defineProperty(exports, "GtmPlugin", { enumerable: true, get: function () { return core_1.GtmSupport; } });
+exports.GtmPlugin = core_1.GtmSupport;
 var gtmPlugin;
 /**
  * Installation procedure.
@@ -135,7 +145,7 @@ function initVueRouterGuard(Vue, vueRouter, ignoredViews, trackOnNextTick, deriv
                         fullUrl += '/';
                     }
                     fullUrl += to.fullPath.startsWith('/')
-                        ? to.fullPath.substr(1)
+                        ? to.fullPath.substring(1)
                         : to.fullPath;
                     if (trackOnNextTick) {
                         Vue.nextTick(function () {
@@ -152,11 +162,11 @@ function initVueRouterGuard(Vue, vueRouter, ignoredViews, trackOnNextTick, deriv
 }
 var _default = { install: install };
 var core_2 = require("@gtm-support/core");
-Object.defineProperty(exports, "assertIsGtmId", { enumerable: true, get: function () { return core_2.assertIsGtmId; } });
-Object.defineProperty(exports, "GtmSupport", { enumerable: true, get: function () { return core_2.GtmSupport; } });
-Object.defineProperty(exports, "hasScript", { enumerable: true, get: function () { return core_2.hasScript; } });
-Object.defineProperty(exports, "loadScript", { enumerable: true, get: function () { return core_2.loadScript; } });
-exports.default = _default;
+__createBinding(exports, core_2, "assertIsGtmId");
+__createBinding(exports, core_2, "GtmSupport");
+__createBinding(exports, core_2, "hasScript");
+__createBinding(exports, core_2, "loadScript");
+exports["default"] = _default;
 /**
  * Returns GTM plugin instance to be used via Composition API inside setup method.
  *
